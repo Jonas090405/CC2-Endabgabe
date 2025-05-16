@@ -1,61 +1,45 @@
-const canvas = document.getElementById('preview');
-const ctx = canvas.getContext('2d');
-
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 
 class Sound {
   constructor() {
+    const now = audioContext.currentTime;
+
     this.env = audioContext.createGain();
     this.env.connect(audioContext.destination);
-    this.env.gain.setValueAtTime(0, audioContext.currentTime);
+    this.env.gain.setValueAtTime(0, now);
 
-    this.lowpass = audioContext.createBiquadFilter();
-    this.lowpass.type = 'lowpass';
-    this.lowpass.frequency.value = 1000;
-    this.lowpass.connect(this.env);
+    this.filter = audioContext.createBiquadFilter();
+    this.filter.type = 'lowpass';
+    this.filter.frequency.value = 1000;
+    this.filter.connect(this.env);
 
     this.osc = audioContext.createOscillator();
     this.osc.type = 'sawtooth';
-    this.osc.connect(this.lowpass);
-    this.osc.start();
+    this.osc.connect(this.filter);
+    this.osc.start(now);
 
-    this.env.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.2);
+    this.env.gain.linearRampToValueAtTime(1, now + 0.2);
   }
 
   update(x, y) {
-    const freq = 100 + 800 * (x / canvas.width);
-    const cutoff = 500 + 3000 * (1 - y / canvas.height);
+    const freq = 100 + 900 * x;
+    const cutoff = 500 + 3000 * (1 - y);
     this.osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-    this.lowpass.frequency.setValueAtTime(cutoff, audioContext.currentTime);
+    this.filter.frequency.setValueAtTime(cutoff, audioContext.currentTime);
   }
 
   stop() {
-    this.env.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.2);
-    this.osc.stop(audioContext.currentTime + 0.5);
+    const now = audioContext.currentTime;
+    this.env.gain.linearRampToValueAtTime(0, now + 0.2);
+    this.osc.stop(now + 0.5);
   }
 }
 
-let localSound = null;
-canvas.addEventListener('mousedown', (e) => {
-  if (!localSound) {
-    localSound = new Sound();
+const remoteSounds = {};
+function getRemoteSound(id) {
+  if (!remoteSounds[id]) {
+    remoteSounds[id] = new Sound();
   }
-});
-
-canvas.addEventListener('mousemove', (e) => {
-  if (localSound) {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    localSound.update(x, y);
-    socket.send(JSON.stringify(['handmove', x, y]));
-  }
-});
-
-canvas.addEventListener('mouseup', () => {
-  if (localSound) {
-    localSound.stop();
-    localSound = null;
-  }
-});
+  return remoteSounds[id];
+}

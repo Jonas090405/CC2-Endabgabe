@@ -4,15 +4,16 @@ body {
   font-family: sans-serif;
   text-align: center;
   margin: 0;
+  padding: 0;
 }
 
-
-canvas {
+video, canvas {
   display: block;
-  margin: 0 auto;
-  background: #222;
+  margin: 10px auto;
+  border: 2px solid #333;
 }
 
-#info-display {
-  margin: 10px;
+#info {
+  margin-top: 10px;
+  font-size: 18px;
 }
