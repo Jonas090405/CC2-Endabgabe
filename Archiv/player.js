@@ -16,7 +16,7 @@ let clientCount = 0;
 const webRoomsWebSocketServerAddr = 'wss://nosch.uber.space/web-rooms/';
 const socket = new WebSocket(webRoomsWebSocketServerAddr);
 
-// Draw the board on the canvas
+// Draw the board on the canvasder 
 function drawBoard() {
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {

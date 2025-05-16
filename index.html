@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-  <link rel="stylesheet" href="styles.css">
-  <script src="scripts.js" defer></script>
-  <title>Touch Synth</title>
+  <meta charset="UTF-8" />
+  <title>Kollaborativer Synth</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="instructions">click and move...</div>
-  <canvas id="canvas"></canvas>
+  <h1>🌀 Kollaborativer Synth</h1>
+  <div id="info-display">Verbundene Clients: 0</div>
+  <canvas id="preview" width="640" height="480"></canvas>
+
+  <script src="synth.js"></script>
+  <script src="socket.js"></script>
 </body>
 </html>
