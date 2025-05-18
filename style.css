@@ -16,7 +16,7 @@ html, body {
   margin: 40px auto;
   width: 90vw;
   max-width: 640px;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16/ 9s;
   border-radius: 16px;
   object-fit: cover;
   z-index: 1;
