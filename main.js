@@ -161,7 +161,7 @@ hands.onResults(results => {
     // Kreis an Zeigefingerposition malen
     canvasCtx.beginPath();
     canvasCtx.arc(x * canvasElement.width, y * canvasElement.height, 10, 0, 2 * Math.PI);
-    canvasCtx.fillStyle = 'lime';
+    canvasCtx.fillStyle = '#a65ecf';
     canvasCtx.fill();
 
     // AudioContext sicherstellen (falls noch nicht gestartet)
