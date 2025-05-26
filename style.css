@@ -1,49 +1,50 @@
 body, html {
-    margin: 0; padding: 0; overflow: hidden;
-    background: #1d1d1d;
-    color: white;
-    font-family: sans-serif;
-  }
-  #title-display {
-    position: fixed; top: 10px; left: 10px;
-    font-size: 24px;
-  }
-  #message-display {
-    position: fixed; top: 40px; left: 10px;
-    font-size: 16px;
-  }
-  #client-index {
-    position: fixed; top: 70px; left: 10px;
-    font-size: 16px;
-  }
-  canvas {
-    display: block;
-  }
-  
-  #background-text {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: 900;
-    font-size: clamp(24px, 6vw, 100px); /* <– kleinerer vw-Wert = früher skalieren */
-    color: white;
-    opacity: 0.03;
-    pointer-events: none;
-    user-select: none;
-    z-index: 0;
-    font-family: 'Helvetica Neue', sans-serif;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  
-  video {
-    position: fixed;
-    width: 1px;
-    height: 1px;
-    top: 0;
-    left: 0;
-    opacity: 0;
-  }
-  
+  margin: 0; padding: 0; overflow: hidden;
+  background-color: #181818;
+  background-color: #171717;
+  opacity: 1;
+  background-image: radial-gradient(#414141 0.8500000000000001px, #181818 0.8500000000000001px);
+  background-size: 17px 17px;}
+#title-display {
+  position: fixed; top: 10px; left: 10px;
+  font-size: 24px;
+}
+#message-display {
+  position: fixed; top: 40px; left: 10px;
+  font-size: 16px;
+}
+#client-index {
+  position: fixed; top: 70px; left: 10px;
+  font-size: 16px;
+}
+canvas {
+  display: block;
+  z-index: 5;
+}
+
+#background-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 900;
+  font-size: clamp(24px, 6vw, 100px); /* <– kleinerer vw-Wert = früher skalieren */
+  color: #201f1f;
+  opacity: 0.8;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  font-family: 'Helvetica Neue', sans-serif;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+video {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
