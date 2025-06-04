@@ -9,7 +9,6 @@ let isPinching = false;
 let lastDrawPos = null;
 const activePinches = new Set();
 const clientNames = new Map();
-
 const clearSound = new Audio('clear.wav');
 clearSound.volume = 0.65; // Lautstärke anpassen
 
@@ -23,7 +22,7 @@ let clientId = null;
 let clientCount = 0;
 
 const animalNames = {
-  a: ['ape','antelope', 'armadillo'],
+  a: ['ape', 'antelope', 'armadillo'],
   b: ['bear', 'beaver', 'buffalo'],
   c: ['cat', 'cougar', 'crab'],
   d: ['dog', 'duck', 'donkey'],
@@ -174,7 +173,7 @@ hands.onResults(onHandsResults);
 
 const camera = new Camera(videoElement, {
   onFrame: async () => {
-    await hands.send({image: videoElement});
+    await hands.send({ image: videoElement });
   },
 });
 start();
@@ -193,54 +192,54 @@ function start() {
  * MediaPipe Hand Results Callback
  */
 function onHandsResults(results) {
-    if (!clientId) return;
-  
-    if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-      const landmarks = results.multiHandLandmarks[0];
-      const x = 1 - landmarks[9].x; // Spiegelung an der vertikalen Mittelachse (horizontal invertieren)
-      const y = landmarks[9].y;
-      const pinchDistance = Math.hypot(
-        landmarks[4].x - landmarks[8].x,
-        landmarks[4].y - landmarks[8].y
-      );
-      const isNowPinching = pinchDistance < 0.04;
-  
-      if (!touches.has(clientId)) {
-        createTouch(clientId, x, y, true);
-        sendRequest('*broadcast-message*', ['start', clientId, x, y]);
-      } else {
-        moveTouch(clientId, x, y);
-        sendRequest('*broadcast-message*', ['move', clientId, x, y]);
-      }
-  
-      // Pinch-Zeichnung
-      if (isNowPinching) {
-        if (lastDrawPos) {
-          drawings.push({ from: lastDrawPos, to: { x, y } });
-          sendRequest('*broadcast-message*', ['draw', clientId, lastDrawPos.x, lastDrawPos.y, x, y]);
-        }
-        lastDrawPos = { x, y };
-      } else {
-        lastDrawPos = null;
-      }
-  
-      isPinching = isNowPinching;
-      if (isNowPinching) {
-        activePinches.add(clientId);
-      } else {
-        activePinches.delete(clientId);
-      }
-        
+  if (!clientId) return;
+
+  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    const landmarks = results.multiHandLandmarks[0];
+    const x = 1 - landmarks[9].x; // Spiegelung an der vertikalen Mittelachse (horizontal invertieren)
+    const y = landmarks[9].y;
+    const pinchDistance = Math.hypot(
+      landmarks[4].x - landmarks[8].x,
+      landmarks[4].y - landmarks[8].y
+    );
+    const isNowPinching = pinchDistance < 0.04;
+
+    if (!touches.has(clientId)) {
+      createTouch(clientId, x, y, true);
+      sendRequest('*broadcast-message*', ['start', clientId, x, y]);
     } else {
-      if (touches.has(clientId)) {
-        deleteTouch(clientId);
-        sendRequest('*broadcast-message*', ['end', clientId]);
-      }
-      lastDrawPos = null;
-      isPinching = false;
+      moveTouch(clientId, x, y);
+      sendRequest('*broadcast-message*', ['move', clientId, x, y]);
     }
+
+    // Pinch-Zeichnung
+    if (isNowPinching) {
+      if (lastDrawPos) {
+        drawings.push({ from: lastDrawPos, to: { x, y } });
+        sendRequest('*broadcast-message*', ['draw', clientId, lastDrawPos.x, lastDrawPos.y, x, y]);
+      }
+      lastDrawPos = { x, y };
+    } else {
+      lastDrawPos = null;
+    }
+
+    isPinching = isNowPinching;
+    if (isNowPinching) {
+      activePinches.add(clientId);
+    } else {
+      activePinches.delete(clientId);
+    }
+
+  } else {
+    if (touches.has(clientId)) {
+      deleteTouch(clientId);
+      sendRequest('*broadcast-message*', ['end', clientId]);
+    }
+    lastDrawPos = null;
+    isPinching = false;
   }
-  
+}
+
 
 /*************************************************************
  * Canvas & Drawing
@@ -281,15 +280,15 @@ function onAnimationFrame() {
   }
 
   for (let [id, touch] of touches) {
-  const x = canvas.width * touch.x;
-  const y = canvas.height * touch.y;
-  drawCircle(context, x, y, touch.own, touch.own, id);
+    const x = canvas.width * touch.x;
+    const y = canvas.height * touch.y;
+    drawCircle(context, x, y, touch.own, touch.own, id);
 
-  const synth = synths.get(id);
-  if (synth) {
-    synth.update(touch.x, 1 - touch.y);
+    const synth = synths.get(id);
+    if (synth) {
+      synth.update(touch.x, 1 - touch.y);
+    }
   }
-}
 
 
   requestAnimationFrame(onAnimationFrame);
@@ -333,14 +332,14 @@ function drawCircle(context, x, y, highlight = false, own = false, id = null) {
   context.globalAlpha = 1;
 
   if (id !== null) {
-  const name = clientNames.get(id) || `User ${id}`;
-  context.font = '12px sans-serif';
-  context.fillStyle = 'white';
-  context.textAlign = 'center';
-  context.textBaseline = 'top';
-  context.shadowBlur = 0;
-  context.fillText(name, x, y + radius + 6);
-}
+    const name = clientNames.get(id) || `User ${id}`;
+    context.font = '12px sans-serif';
+    context.fillStyle = 'white';
+    context.textAlign = 'center';
+    context.textBaseline = 'top';
+    context.shadowBlur = 0;
+    context.fillText(name, x, y + radius + 6);
+  }
 
 }
 
@@ -368,36 +367,36 @@ const synthListElem = document.getElementById('synth-list') || (() => {
 })();
 
 function updateSynthListDisplay() {
-    // Sortiere alle Touch IDs numerisch
-    const sortedIds = Array.from(touches.keys()).sort((a, b) => a - b);
-  
-    // Finde die eigene Position (1-basiert)
-    const ownPos = sortedIds.indexOf(clientId);
-    const total = sortedIds.length;
-  
-    // Text für Position (falls nicht gefunden, zeige nur total)
-    let headerText;
-    if (ownPos >= 0) {
-      headerText = `<strong>User ${ownPos + 1} / ${total}</strong><br>`;
-    } else {
-      headerText = `<strong>Users on board: ${total}</strong><br>`;
-    }
-  
-    // Baue Liste der User
-    let html = headerText;
-    for (let i = 0; i < sortedIds.length; i++) {
-      const id = sortedIds[i];
-      const synth = synths.get(id);
-      if (!synth) continue;
-      const waveType = synth.osc.type;
-      const userName = clientNames.get(id) || `User #${i + 1}`;
-      const youTag = (id === clientId) ? ' (You)' : '';
-      html += `${userName}${youTag}: ${waveType}<br>`;
-          }
-  
-    synthListElem.innerHTML = html;
+  // Sortiere alle Touch IDs numerisch
+  const sortedIds = Array.from(touches.keys()).sort((a, b) => a - b);
+
+  // Finde die eigene Position (1-basiert)
+  const ownPos = sortedIds.indexOf(clientId);
+  const total = sortedIds.length;
+
+  // Text für Position (falls nicht gefunden, zeige nur total)
+  let headerText;
+  if (ownPos >= 0) {
+    headerText = `<strong>User ${ownPos + 1} / ${total}</strong><br>`;
+  } else {
+    headerText = `<strong>Users on board: ${total}</strong><br>`;
   }
-  
+
+  // Baue Liste der User
+  let html = headerText;
+  for (let i = 0; i < sortedIds.length; i++) {
+    const id = sortedIds[i];
+    const synth = synths.get(id);
+    if (!synth) continue;
+    const waveType = synth.osc.type;
+    const userName = clientNames.get(id) || `User #${i + 1}`;
+    const youTag = (id === clientId) ? ' (You)' : '';
+    html += `${userName}${youTag}: ${waveType}<br>`;
+  }
+
+  synthListElem.innerHTML = html;
+}
+
 /*************************************************************
  * Clear Button (unten rechts)
  */
@@ -460,13 +459,13 @@ socket.addEventListener('open', (event) => {
 });
 
 socket.addEventListener("close", (event) => {
-    if (clientId !== null) {
-      sendRequest('*broadcast-message*', ['end', clientId]); // sende gültige ID
-    }
-    clientId = null;
-    document.body.classList.add('disconnected');
-  });
-  
+  if (clientId !== null) {
+    sendRequest('*broadcast-message*', ['end', clientId]); // sende gültige ID
+  }
+  clientId = null;
+  document.body.classList.add('disconnected');
+});
+
 
 socket.addEventListener('message', (event) => {
   const data = event.data;
@@ -479,43 +478,43 @@ socket.addEventListener('message', (event) => {
         clientId = incoming[1] + 1;
         const name = generateRandomName();
         clientNames.set(clientId, name);
-      
+
         // Broadcast eigenen Namen
         sendRequest('*broadcast-message*', ['name', clientId, name]);
-      
+
         // 🆕 Fordere Namen der anderen an
         sendRequest('*broadcast-message*', ['request-names', clientId]);
-      
+
         start();
         updateSynthListDisplay();
         break;
-      
+
 
       case '*client-count*':
         clientCount = incoming[1];
         updateSynthListDisplay();
         break;
 
-        case 'start': {
-          const id = incoming[1];
-          const x = incoming[2];
-          const y = incoming[3];
-        
-          // Falls kein Name bekannt → Anfrage senden
-          if (!clientNames.has(id)) {
-            clientNames.set(id, `User ${id}`);
-            // sende deinen eigenen Namen zurück, falls du ihn bist
-            if (id !== clientId && clientNames.has(clientId)) {
-              sendRequest('*broadcast-message*', ['name', clientId, clientNames.get(clientId)]);
-            }
+      case 'start': {
+        const id = incoming[1];
+        const x = incoming[2];
+        const y = incoming[3];
+
+        // Falls kein Name bekannt → Anfrage senden
+        if (!clientNames.has(id)) {
+          clientNames.set(id, `User ${id}`);
+          // sende deinen eigenen Namen zurück, falls du ihn bist
+          if (id !== clientId && clientNames.has(clientId)) {
+            sendRequest('*broadcast-message*', ['name', clientId, clientNames.get(clientId)]);
           }
-        
-          if (id !== clientId) createTouch(id, x, y);
-          updateSynthListDisplay();
-          break;
         }
-        
-        
+
+        if (id !== clientId) createTouch(id, x, y);
+        updateSynthListDisplay();
+        break;
+      }
+
+
 
       case 'move': {
         const id = incoming[1];
@@ -554,7 +553,7 @@ socket.addEventListener('message', (event) => {
         remoteDrawings.clear();
         break;
       }
-      
+
       case 'name': {
         const id = incoming[1];
         const name = incoming[2];
@@ -562,9 +561,9 @@ socket.addEventListener('message', (event) => {
         updateSynthListDisplay();
         break;
       }
-      
+
       case 'request-names': {
-      
+
         //Jeder sendet seinen Namen als Antwort
         clientNames.forEach((name, id) => {
           sendRequest('*broadcast-message*', ['name', id, name]);
@@ -576,7 +575,7 @@ socket.addEventListener('message', (event) => {
         playClearSound();
         break;
       }
-      
+
 
       default:
         break;
@@ -607,12 +606,11 @@ function drawLine(from, to) {
 window.addEventListener('resize', updateCanvasSize);
 
 window.addEventListener('beforeunload', () => {
-    if (clientId !== null && socket.readyState === WebSocket.OPEN) {
-      const msg = JSON.stringify(['*broadcast-message*', ['end', clientId]]);
-      socket.send(msg);
-    }
-  });
-  
+  if (clientId !== null && socket.readyState === WebSocket.OPEN) {
+    const msg = JSON.stringify(['*broadcast-message*', ['end', clientId]]);
+    socket.send(msg);
+  }
+});
 
-  
-  
+
+
